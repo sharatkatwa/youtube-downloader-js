@@ -77,7 +77,7 @@
       const format = select.value;
       const hasAudio = select.options[select.selectedIndex].dataset.audio;
 
-     window.location.href = `http://localhost:3000/download?url=${encodeURIComponent(url)}&format=${format}&hasAudio=${hasAudio}`;
+     window.location.href = `/download?url=${encodeURIComponent(url)}&format=${format}&hasAudio=${hasAudio}`;
     }
   </script>
 
