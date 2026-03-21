@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="style.css">
+  <title>YouTube Downloader</title>
+
+  
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>🎬 YouTube Downloader</h1>
+
+    <input id="url" placeholder="Paste YouTube link here..." />
+
+    <button class="secondary" onclick="getFormats()">
+      Get Formats
+    </button>
+
+    <select id="formats"></select>
+
+    <button onclick="download()">
+      Download Video
+    </button>
+  </div>
+
+  <script>
+    async function getFormats() {
+      const url = document.getElementById("url").value;
+
+      if (!url) {
+        alert("Please enter a URL");
+        return;
+      }
+
+      try {
+        const res = await fetch(
+          `http://localhost:3000/formats?url=${encodeURIComponent(url)}`
+        );
+
+        const data = await res.json();
+
+        const select = document.getElementById("formats");
+        select.innerHTML = "";
+
+        data.forEach((f) => {
+          const option = document.createElement("option");
+
+          option.value = f.format_id;
+          option.dataset.audio = f.hasAudio;
+
+          option.text = `${f.quality} (${f.ext}) ${
+            f.hasAudio ? "✅ Audio" : "❌ No Audio"
+          }`;
+          select.appendChild(option);
+        });
+
+      } catch (err) {
+        console.error(err);
+        alert("Failed to fetch formats");
+      }
+    }
+
+    function download() {
+      const url = document.getElementById("url").value;
+      const select = document.getElementById("formats");
+
+      if (!url) {
+        alert("Enter a URL first");
+        return;
+      }
+
+      if (!select.value) {
+        alert("Select a format");
+        return;
+      }
+
+      const format = select.value;
+      const hasAudio = select.options[select.selectedIndex].dataset.audio;
+
+     window.location.href = `http://localhost:3000/download?url=${encodeURIComponent(url)}&format=${format}&hasAudio=${hasAudio}`;
+    }
+  </script>
+
+</body>
+</html>
