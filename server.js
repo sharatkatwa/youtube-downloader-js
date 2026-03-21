@@ -25,7 +25,7 @@ app.get("/formats", (req, res) => {
     return res.status(400).send("URL is required");
   }
 
-  const ytDlp = spawn(ytdlp_path, ["--dump-single-json", url]);
+  const ytDlp = spawn('python3', ["--dump-single-json", url]);
 
 // 👇 PUT DEBUG HERE
 ytDlp.on("error", (err) => {
@@ -89,7 +89,7 @@ app.get("/download", (req, res) => {
 
   console.log("Downloading:", formatString);
 
-  const ytDlp = spawn(ytdlp_path, [
+  const ytDlp = spawn('python3', [
     "-f",
     formatString,
     "--merge-output-format",
