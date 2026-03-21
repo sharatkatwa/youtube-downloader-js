@@ -3,7 +3,7 @@ const { spawn } = require("child_process");
 const fs = require("fs");
 const path = require("path");   // ✅ ADD THIS
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
@@ -12,7 +12,9 @@ process.env.FFMPEG_PATH = ffmpegPath;
 app.use(express.static("public"));
 
 
-
+  const ytdlp_path =fs.existsSync("/opt/render/.local/bin/yt-dlp")
+  ? "/opt/render/.local/bin/yt-dlp"
+  : "yt-dlp";
 /**
  * 📌 Get available formats (clean JSON)
  */
@@ -23,7 +25,7 @@ app.get("/formats", (req, res) => {
     return res.status(400).send("URL is required");
   }
 
-  const ytDlp = spawn("/opt/render/.local/bin/yt-dlp", ["--dump-single-json", url]);
+  const ytDlp = spawn(ytdlp_path, ["--dump-single-json", url]);
 
 // 👇 PUT DEBUG HERE
 ytDlp.on("error", (err) => {
@@ -87,7 +89,7 @@ app.get("/download", (req, res) => {
 
   console.log("Downloading:", formatString);
 
-  const ytDlp = spawn("/opt/render/.local/bin/yt-dlp", [
+  const ytDlp = spawn(ytdlp_path, [
     "-f",
     formatString,
     "--merge-output-format",
@@ -133,5 +135,5 @@ ytDlp.on("error", (err) => {
  * 📌 Start server
  */
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });

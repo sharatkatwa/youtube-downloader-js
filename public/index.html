@@ -26,59 +26,150 @@
   </div>
 
   <script>
+    // async function getFormats() {
+    //   const url = document.getElementById("url").value;
+
+    //   if (!url) {
+    //     alert("Please enter a URL");
+    //     return;
+    //   }
+
+    //   try {
+    //     const res = await fetch(
+    //       `/formats?url=${encodeURIComponent(url)}`
+    //     );
+
+    //     const data = await res.json();
+
+    //     const select = document.getElementById("formats");
+    //     select.innerHTML = "";
+
+    //     data.forEach((f) => {
+    //       const option = document.createElement("option");
+
+    //       option.value = f.format_id;
+    //       option.dataset.audio = f.hasAudio;
+
+    //       option.text = `${f.quality} (${f.ext})`;
+    //       select.appendChild(option);
+    //     });
+
+    //   } catch (err) {
+    //     console.error(err);
+    //     alert("Failed to fetch formats");
+    //   }
+    // }
+
+    // function download() {
+    //   const url = document.getElementById("url").value;
+    //   const select = document.getElementById("formats");
+
+    //   if (!url) {
+    //     alert("Enter a URL first");
+    //     return;
+    //   }
+
+    //   if (!select.value) {
+    //     alert("Select a format");
+    //     return;
+    //   }
+
+    //   const format = select.value;
+    //   const hasAudio = select.options[select.selectedIndex].dataset.audio;
+
+    //  window.location.href = `/download?url=${encodeURIComponent(url)}&format=${format}&hasAudio=${hasAudio}`;
+    // }
     async function getFormats() {
-      const url = document.getElementById("url").value;
+    const urlInput = document.getElementById("url");
+    const url = urlInput.value.trim();
+    const select = document.getElementById("formats");
 
-      if (!url) {
-        alert("Please enter a URL");
-        return;
-      }
-
-      try {
-        const res = await fetch(
-          `/formats?url=${encodeURIComponent(url)}`
-        );
-
-        const data = await res.json();
-
-        const select = document.getElementById("formats");
-        select.innerHTML = "";
-
-        data.forEach((f) => {
-          const option = document.createElement("option");
-
-          option.value = f.format_id;
-          option.dataset.audio = f.hasAudio;
-
-          option.text = `${f.quality} (${f.ext})`;
-          select.appendChild(option);
-        });
-
-      } catch (err) {
-        console.error(err);
-        alert("Failed to fetch formats");
-      }
+    if (!url) {
+      alert("Please enter a URL");
+      return;
     }
 
-    function download() {
-      const url = document.getElementById("url").value;
-      const select = document.getElementById("formats");
-
-      if (!url) {
-        alert("Enter a URL first");
-        return;
-      }
-
-      if (!select.value) {
-        alert("Select a format");
-        return;
-      }
-
-      const format = select.value;
-      const hasAudio = select.options[select.selectedIndex].dataset.audio;
-
-     window.location.href = `/download?url=${encodeURIComponent(url)}&format=${format}&hasAudio=${hasAudio}`;
+    // simple validation
+    if (!url.includes("youtube.com") && !url.includes("youtu.be")) {
+      alert("Enter a valid YouTube URL");
+      return;
     }
+
+    try {
+      // UI feedback
+      select.innerHTML = "<option>Loading...</option>";
+
+      const res = await fetch(
+        `/formats?url=${encodeURIComponent(url)}`
+      );
+
+      if (!res.ok) {
+        throw new Error("Server error");
+      }
+
+      const data = await res.json();
+
+      select.innerHTML = "";
+
+      if (data.length === 0) {
+        select.innerHTML = "<option>No formats found</option>";
+        return;
+      }
+
+      data.forEach((f) => {
+        const option = document.createElement("option");
+
+        option.value = f.format_id;
+        option.dataset.audio = f.hasAudio;
+
+        option.text = `${f.quality} (${f.ext}) ${
+          f.hasAudio ? "✅" : "❌"
+        }`;
+
+        select.appendChild(option);
+      });
+
+    } catch (err) {
+      console.error(err);
+      select.innerHTML = "";
+      alert("Failed to fetch formats");
+    }
+  }
+
+  function download() {
+    const url = document.getElementById("url").value.trim();
+    const select = document.getElementById("formats");
+
+    if (!url) {
+      alert("Enter a URL first");
+      return;
+    }
+
+    if (!select.value) {
+      alert("Select a format");
+      return;
+    }
+
+    const format = select.value;
+    const hasAudio =
+      select.options[select.selectedIndex].dataset.audio;
+
+    // UI feedback
+    const btn = event.target;
+    btn.disabled = true;
+    btn.innerText = "Downloading...";
+
+    // trigger download
+    window.location.href =
+      `/download?url=${encodeURIComponent(url)}&format=${format}&hasAudio=${hasAudio}`;
+
+    // reset button after delay
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.innerText = "Download Video";
+    }, 3000);
+  }
+  
   </script>
 
 </body>
