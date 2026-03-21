@@ -50,9 +50,7 @@
           option.value = f.format_id;
           option.dataset.audio = f.hasAudio;
 
-          option.text = `${f.quality} (${f.ext}) ${
-            f.hasAudio ? "✅ Audio" : "❌ No Audio"
-          }`;
+          option.text = `${f.quality} (${f.ext})`;
           select.appendChild(option);
         });
 

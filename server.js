@@ -5,8 +5,13 @@ const path = require("path");   // ✅ ADD THIS
 const app = express();
 const PORT = 3000;
 
+
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+process.env.FFMPEG_PATH = ffmpegPath;
 // Serve frontend
 app.use(express.static("public"));
+
+
 
 /**
  * 📌 Get available formats (clean JSON)
