@@ -23,8 +23,12 @@ app.get("/formats", (req, res) => {
     return res.status(400).send("URL is required");
   }
 
-  const ytDlp = spawn("yt-dlp", ["--dump-single-json", url]);
+  const ytDlp = spawn("/opt/render/.local/bin/yt-dlp", ["--dump-single-json", url]);
 
+// 👇 PUT DEBUG HERE
+ytDlp.on("error", (err) => {
+  console.error("Spawn error:", err);
+});
   let data = "";
 
   ytDlp.stdout.on("data", (chunk) => {
@@ -83,7 +87,7 @@ app.get("/download", (req, res) => {
 
   console.log("Downloading:", formatString);
 
-  const ytDlp = spawn("yt-dlp", [
+  const ytDlp = spawn("/opt/render/.local/bin/yt-dlp", [
     "-f",
     formatString,
     "--merge-output-format",
@@ -92,6 +96,11 @@ app.get("/download", (req, res) => {
     filePath,
     url,
   ]);
+  
+  // 👇 PUT DEBUG HERE
+ytDlp.on("error", (err) => {
+  console.error("Spawn error:", err);
+});
 
   ytDlp.stderr.on("data", (data) => {
     console.log(data.toString());
