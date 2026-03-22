@@ -14,8 +14,9 @@ const ytdlp_path = fs.existsSync("/opt/render/.local/bin/yt-dlp") ? "/opt/render
 // const cookiesPath = path.join(__dirname, "cookies.txt");
 const os = require("os");
 
-const cookiesPath = path.join(os.tmpdir(), "cookies.txt");
-fs.writeFileSync(cookiesPath, process.env.YT_COOKIES);
+// const cookiesPath = path.join(os.tmpdir(), "cookies.txt");
+const cookiesPath = "/etc/secrets/cookies.txt";
+// fs.writeFileSync(cookiesPath, process.env.YT_COOKIES);
 /**
  * 📌 Get available formats (clean JSON)
  */
