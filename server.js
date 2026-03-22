@@ -1,20 +1,17 @@
 const express = require("express");
 const { spawn } = require("child_process");
 const fs = require("fs");
-const path = require("path");   // ✅ ADD THIS
+const path = require("path"); // ✅ ADD THIS
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-
-const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 process.env.FFMPEG_PATH = ffmpegPath;
 // Serve frontend
 app.use(express.static("public"));
 
-
-  const ytdlp_path =fs.existsSync("/opt/render/.local/bin/yt-dlp")
-  ? "/opt/render/.local/bin/yt-dlp"
-  : "yt-dlp";
+const ytdlp_path = fs.existsSync("/opt/render/.local/bin/yt-dlp") ? "/opt/render/.local/bin/yt-dlp" : "yt-dlp";
+const cookiesPath = path.join(__dirname, "cookies.txt");
 /**
  * 📌 Get available formats (clean JSON)
  */
@@ -25,18 +22,23 @@ app.get("/formats", (req, res) => {
     return res.status(400).send("URL is required");
   }
 
-  // const ytDlp = spawn('python3', ["--dump-single-json", url]);
-    const ytDlp = spawn("python3", [
-    "-m",
-    "yt_dlp",
+  const ytDlp = spawn(ytdlp_path, [
     "--dump-single-json",
+    "--user-agent",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
+    "--cookies",
+    cookiesPath,
+    "--js-runtimes",
+    "node",
+    "--remote-components",
+    "ejs:github",
     url,
   ]);
 
-// 👇 PUT DEBUG HERE
-ytDlp.on("error", (err) => {
-  console.error("Spawn error:", err);
-});
+  // 👇 PUT DEBUG HERE
+  ytDlp.on("error", (err) => {
+    console.error("Spawn error:", err);
+  });
   let data = "";
 
   ytDlp.stdout.on("data", (chunk) => {
@@ -56,13 +58,13 @@ ytDlp.on("error", (err) => {
       const json = JSON.parse(data);
 
       const formats = json.formats
-        .filter(f => f.vcodec !== "none" && f.height)
-        .map(f => ({
+        .filter((f) => f.vcodec !== "none" && f.height)
+        .map((f) => ({
           format_id: f.format_id,
           quality: `${f.height}p`,
           height: f.height,
           ext: f.ext,
-          hasAudio: f.acodec !== "none"
+          hasAudio: f.acodec !== "none",
         }))
         .sort((a, b) => b.height - a.height);
 
@@ -86,18 +88,22 @@ app.get("/download", (req, res) => {
 
   const isAudioIncluded = hasAudio === "true";
 
-  const formatString = isAudioIncluded
-    ? format
-    : `${format}+bestaudio`;
+  const formatString = isAudioIncluded ? format : `${format}+bestaudio`;
 
   const fileName = `video-${Date.now()}.mp4`;
   const filePath = path.join(__dirname, fileName);
 
   console.log("Downloading:", formatString);
 
-  const ytDlp = spawn('python3', [
-    "-m",
-    "yt_dlp",
+  const ytDlp = spawn(ytdlp_path, [
+    "--cookies",
+    cookiesPath,
+    "--user-agent",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
+    "--js-runtimes",
+    "node",
+    "--remote-components",
+    "ejs:github",
     "-f",
     formatString,
     "--merge-output-format",
@@ -106,11 +112,11 @@ app.get("/download", (req, res) => {
     filePath,
     url,
   ]);
-  
+
   // 👇 PUT DEBUG HERE
-ytDlp.on("error", (err) => {
-  console.error("Spawn error:", err);
-});
+  ytDlp.on("error", (err) => {
+    console.error("Spawn error:", err);
+  });
 
   ytDlp.stderr.on("data", (data) => {
     console.log(data.toString());
@@ -126,10 +132,7 @@ ytDlp.on("error", (err) => {
     }
 
     // ✅ Force download
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename="${fileName}"`
-    );
+    res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
 
     res.sendFile(filePath, (err) => {
       if (err) console.error(err);
