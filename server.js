@@ -120,6 +120,10 @@ app.get("/download", (req, res) => {
     "ejs:github",
     "-f",
     formatString,
+     // 🔥 SPEED BOOST FLAGS
+    "--concurrent-fragments", "5",
+    "--no-part",
+    "--no-cache-dir",
     "--merge-output-format",
     "mp4",
     "-o",
