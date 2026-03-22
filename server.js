@@ -11,7 +11,10 @@ process.env.FFMPEG_PATH = ffmpegPath;
 app.use(express.static("public"));
 
 const ytdlp_path = fs.existsSync("/opt/render/.local/bin/yt-dlp") ? "/opt/render/.local/bin/yt-dlp" : "yt-dlp";
-const cookiesPath = path.join(__dirname, "cookies.txt");
+// const cookiesPath = path.join(__dirname, "cookies.txt");
+const os = require("os");
+
+const cookiesPath = path.join(os.tmpdir(), "cookies.txt");
 /**
  * 📌 Get available formats (clean JSON)
  */
