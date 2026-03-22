@@ -1,7 +1,7 @@
 const express = require("express");
 const { spawn } = require("child_process");
 const fs = require("fs");
-const path = require("path"); // ✅ ADD THIS
+const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -49,7 +49,7 @@ app.get("/formats", (req, res) => {
     url,
   ]);
 
-  // 👇 PUT DEBUG HERE
+
   ytDlp.on("error", (err) => {
     console.error("Spawn error:", err);
   });

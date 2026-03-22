@@ -1,12 +1,12 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
   <title>YouTube Downloader</title>
-
-  
 </head>
-
 <body>
 
   <div class="container">
@@ -25,60 +25,8 @@
     </button>
   </div>
 
-  <script>
-    // async function getFormats() {
-    //   const url = document.getElementById("url").value;
-
-    //   if (!url) {
-    //     alert("Please enter a URL");
-    //     return;
-    //   }
-
-    //   try {
-    //     const res = await fetch(
-    //       `/formats?url=${encodeURIComponent(url)}`
-    //     );
-
-    //     const data = await res.json();
-
-    //     const select = document.getElementById("formats");
-    //     select.innerHTML = "";
-
-    //     data.forEach((f) => {
-    //       const option = document.createElement("option");
-
-    //       option.value = f.format_id;
-    //       option.dataset.audio = f.hasAudio;
-
-    //       option.text = `${f.quality} (${f.ext})`;
-    //       select.appendChild(option);
-    //     });
-
-    //   } catch (err) {
-    //     console.error(err);
-    //     alert("Failed to fetch formats");
-    //   }
-    // }
-
-    // function download() {
-    //   const url = document.getElementById("url").value;
-    //   const select = document.getElementById("formats");
-
-    //   if (!url) {
-    //     alert("Enter a URL first");
-    //     return;
-    //   }
-
-    //   if (!select.value) {
-    //     alert("Select a format");
-    //     return;
-    //   }
-
-    //   const format = select.value;
-    //   const hasAudio = select.options[select.selectedIndex].dataset.audio;
-
-    //  window.location.href = `/download?url=${encodeURIComponent(url)}&format=${format}&hasAudio=${hasAudio}`;
-    // }
+    <script>
+ 
     async function getFormats() {
     const urlInput = document.getElementById("url");
     const url = urlInput.value.trim();
@@ -171,6 +119,5 @@
   }
   
   </script>
-
 </body>
-</html>
+</html

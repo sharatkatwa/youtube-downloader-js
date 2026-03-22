@@ -1,19 +1,29 @@
-    body {
-      margin: 0;
+    * {
+      margin:0;
+      padding:0;
+      box-sizing: border-box;
+    }    
+    html,body {
+     height: 100vh;
+      width:100vw;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: #0f172a;
       color: white;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      /* margin-inline: auto; */
+     
+      
     }
 
     .container {
+    margin-inline:10px;
       background: #1e293b;
       padding: 30px;
       border-radius: 20px;
-      width: 400px;
+      max-width: 500px;
+      width:100%;
       box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     }
 
@@ -24,12 +34,12 @@
     }
 
     input {
-      width: 95%;
+      width: 100%;
       padding: 12px;
       border-radius: 10px;
       border: none;
       outline: none;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
       background: #334155;
       color: white;
     }
