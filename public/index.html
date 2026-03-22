@@ -9,20 +9,74 @@
 </head>
 <body>
 
-  <div class="container">
-    <h1>🎬 YouTube Downloader</h1>
-
-    <input id="url" placeholder="Paste YouTube link here..." />
-
-    <button class="secondary" onclick="getFormats()">
-      Get Formats
-    </button>
-
-    <select id="formats"></select>
-
-    <button onclick="download()">
-      Download Video
-    </button>
+<div class="page">
+ 
+    <!-- Nav -->
+    <nav>
+      <div class="nav-logo">
+        <span class="dot"></span>
+        YT<span style="color:var(--accent)">Drop</span>
+      </div>
+      <span class="nav-badge">v1.0 · Free</span>
+    </nav>
+ 
+    <!-- Hero -->
+    <div class="hero">
+      <p class="hero-tag">YouTube Downloader</p>
+      <h1>Download Any<br /><span>Video, Instantly.</span></h1>
+      <p class="hero-sub">Paste a link, pick your format, and get your file in seconds. No signups, no limits, no fuss.</p>
+    </div>
+ 
+    <!-- Main card -->
+    <div class="container">
+      <p class="field-label">Video URL</p>
+      <div class="input-group">
+        <input id="url" placeholder="https://youtube.com/watch?v=..." />
+        <button class="secondary" onclick="getFormats()">
+          Fetch
+        </button>
+      </div>
+ 
+      <p class="field-label">Format</p>
+      <div class="select-wrapper">
+        <select id="formats">
+          <option value="" disabled selected>— Select a format —</option>
+        </select>
+      </div>
+ 
+      <div class="divider"></div>
+ 
+      <button onclick="download()">
+        <div class="btn-inner">
+          <span class="btn-icon">⬇︎</span>
+          Download Video
+        </div>
+      </button>
+    </div>
+ 
+    <!-- Feature cards -->
+    <div class="features">
+      <div class="feat">
+        <div class="feat-icon">⚡</div>
+        <div class="feat-title">Lightning Fast</div>
+        <div class="feat-desc">Direct stream processing with zero overhead or wait queues.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">🎞</div>
+        <div class="feat-title">Multiple Formats</div>
+        <div class="feat-desc">MP4, WebM, audio-only — choose exactly what you need.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">🔒</div>
+        <div class="feat-title">Private by Default</div>
+        <div class="feat-desc">No logs, no tracking. Your downloads stay yours.</div>
+      </div>
+    </div>
+ 
+    <footer>
+      <span>Built with Node.js · For personal use only · Respect copyright laws</span>
+    </footer>
+ 
   </div>
 
     <script>
