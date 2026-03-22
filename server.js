@@ -80,7 +80,7 @@ app.get("/formats", (req, res) => {
           ext: f.ext,
           hasAudio: f.acodec !== "none",
         }))
-        .sort((a, b) => b.height - a.height);
+        .sort((a, b) =>  a.height - b.height);
 
       res.json(formats);
     } catch (err) {
