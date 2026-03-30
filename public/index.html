@@ -80,8 +80,10 @@
   </div>
 
     <script>
- 
-    async function getFormats() {
+ let lastFormatsUrl = "";
+ let lastFormatsData = [];
+
+ async function getFormats() {
     const urlInput = document.getElementById("url");
     const url = urlInput.value.trim();
     const select = document.getElementById("formats");
@@ -101,6 +103,11 @@
       // UI feedback
       select.innerHTML = "<option>Loading...</option>";
 
+      if (url === lastFormatsUrl && lastFormatsData.length > 0) {
+        renderFormats(lastFormatsData);
+        return;
+      }
+
       const res = await fetch(
         `/formats?url=${encodeURIComponent(url)}`
       );
@@ -110,26 +117,9 @@
       }
 
       const data = await res.json();
-
-      select.innerHTML = "";
-
-      if (data.length === 0) {
-        select.innerHTML = "<option>No formats found</option>";
-        return;
-      }
-
-      data.forEach((f) => {
-        const option = document.createElement("option");
-
-        option.value = f.format_id;
-        option.dataset.audio = f.hasAudio;
-
-        option.text = `${f.quality} (${f.ext}) ${
-          f.hasAudio ? "OG Audio" : "Merged Audio"
-        }`;
-
-        select.appendChild(option);
-      });
+      lastFormatsUrl = url;
+      lastFormatsData = data;
+      renderFormats(data);
 
     } catch (err) {
       console.error(err);
@@ -138,40 +128,76 @@
     }
   }
 
-  function download() {
-    const url = document.getElementById("url").value.trim();
+  function renderFormats(data) {
     const select = document.getElementById("formats");
+    select.innerHTML = "";
 
-    if (!url) {
-      alert("Enter a URL first");
+    if (data.length === 0) {
+      select.innerHTML = "<option>No formats found</option>";
       return;
     }
 
-    if (!select.value) {
-      alert("Select a format");
-      return;
-    }
+    data.forEach((f) => {
+      const option = document.createElement("option");
 
-    const format = select.value;
-    const hasAudio =
-      select.options[select.selectedIndex].dataset.audio;
+      option.value = f.format_id;
+      option.dataset.audio = f.hasAudio;
+      option.dataset.ext = f.ext;
 
-    // UI feedback
-    const btn = event.target;
-    btn.disabled = true;
-    btn.innerText = "Downloading...";
+      option.text = `${f.quality} (${f.ext}) ${
+        f.hasAudio ? "Original audio" : "Video only"
+      }`;
 
-    // trigger download
-    window.location.href =
-      `/download?url=${encodeURIComponent(url)}&format=${format}&hasAudio=${hasAudio}`;
-
-    // reset button after delay
-    setTimeout(() => {
-      btn.disabled = false;
-      btn.innerText = "Download Video";
-    }, 3000);
+      select.appendChild(option);
+    });
   }
+  // function download() {
+  //   const url = document.getElementById("url").value.trim();
+  //   const select = document.getElementById("formats");
+
+  //   if (!url) {
+  //     alert("Enter a URL first");
+  //     return;
+  //   }
+
+  //   if (!select.value) {
+  //     alert("Select a format");
+  //     return;
+  //   }
+
+  //   const format = select.value;
+  //   const hasAudio =
+  //     select.options[select.selectedIndex].dataset.audio;
+
+  //   // UI feedback
+  //   const btn = event.target;
+  //   btn.disabled = true;
+  //   btn.innerText = "Downloading...";
+
+  //   // trigger download
+  //   window.location.href =
+  //     `/download?url=${encodeURIComponent(url)}&format=${format}&hasAudio=${hasAudio}`;
+
+  //   // reset button after delay
+  //   setTimeout(() => {
+  //     btn.disabled = false;
+  //     btn.innerText = "Download Video";
+  //   }, 3000);
+  // }
   
+ function download() {
+  const url = document.getElementById("url").value.trim();
+  const select = document.getElementById("formats");
+
+  if (!url) return alert("Enter URL");
+  if (!select.value) return alert("Select format");
+
+  const format = select.value;
+  const ext = select.options[select.selectedIndex].dataset.ext || "mp4";
+
+  window.location.href =
+    `/download?url=${encodeURIComponent(url)}&format=${format}&ext=${encodeURIComponent(ext)}`;
+}
   </script>
 </body>
 </html
